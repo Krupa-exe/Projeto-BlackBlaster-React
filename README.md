@@ -1,70 +1,94 @@
-# Getting Started with Create React App
+# 🎬 BlackBlaster
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> Plataforma de aluguel de filmes online desenvolvida em React.
 
-## Available Scripts
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react)
+![React Router](https://img.shields.io/badge/React_Router-7-CA4245?style=flat&logo=reactrouter)
+![CSS3](https://img.shields.io/badge/CSS3-Customizado-1572B6?style=flat&logo=css3)
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 📋 Sobre o Projeto
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+O **BlackBlaster** é uma aplicação web de aluguel de filmes com tema cinematográfico — paleta escura com vermelho sangue. O usuário pode navegar pelo catálogo, filtrar filmes por gênero, adicionar ao carrinho, se cadastrar com validação de CPF e conhecer a equipe por trás do projeto.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## ✨ Funcionalidades
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- 🏠 **Home** — Apresentação da plataforma, seção "Como Funciona" e planos disponíveis
+- 🎥 **Catálogo de Filmes** — 15 filmes organizados em 6 gêneros, com filtro e ordenação alfabética
+- 🛒 **Carrinho** — Adição e remoção de filmes, cálculo de total e finalização de pedido
+- 📝 **Cadastro** — Formulário com validação completa: nome, e-mail, CPF (Módulo 11), plano e termos
+- 👥 **Equipe** — Apresentação dos desenvolvedores com avatar, cargo e links para LinkedIn e GitHub
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🗂️ Estrutura do Projeto
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+src/
+├── pages/
+│   ├── Home.js
+│   ├── FilmesPage.js
+│   ├── CarrinhoPage.js
+│   ├── CadastroPage.js
+│   └── EquipePage.js
+├── components/
+│   ├── Layout.js
+│   ├── CartaoFilme.js
+│   ├── ItemCarrinho.js
+│   ├── Equipe.js
+│   ├── Sobre.js
+│   └── Social.js
+├── services/
+│   └── cadastroServices.js
+├── index.css
+└── App.js
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 🚀 Como Rodar o Projeto
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+**Pré-requisitos:** Node.js instalado.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+# Clone o repositório
+git clone https://github.com/Krupa-exe/Projeto-BlackBlaster-React.git
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# Entre na pasta
+cd Projeto-BlackBlaster-React
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+# Instale as dependências
+npm install
 
-## Learn More
+# Rode o projeto
+npm start
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Acesse em: [http://localhost:3000](http://localhost:3000)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## 🛠️ Tecnologias Utilizadas
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+| Tecnologia | Uso |
+|---|---|
+| React 19 | Biblioteca principal |
+| React Router DOM 7 | Navegação entre páginas |
+| React Icons | Ícones de LinkedIn e GitHub |
+| CSS3 com variáveis | Estilização customizada |
+| Create React App | Estrutura inicial do projeto |
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 👥 Equipe
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+| Nome | GitHub |
+|---|---|
+| Andrey Nery Lima Bonat | [@andrey_bonat](https://github.com/andrey_bonat) |
+| Arthur Albert Schmaiske Quoos | [@arthur_quoos](https://github.com/arthur_quoos) |
+| Eric Tan Hui Zhen | [@eric_zhen](https://github.com/eric_zhen) |
+| João Vitor Krupa Inglês | [@joao_ingles](https://github.com/joao_ingles) |
+| João Vitor Zambão | [@joao_zambao](https://github.com/joao_zambao) |
