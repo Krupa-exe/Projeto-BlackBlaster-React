@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import ItemCarrinho from "../components/ItemCarrinho";
 
 export default function CarrinhoPage({ carrinho, setCarrinho, usuario }) {
@@ -6,28 +8,45 @@ export default function CarrinhoPage({ carrinho, setCarrinho, usuario }) {
   const [pedidoFinalizado, setPedidoFinalizado] = useState(false);
   const [erro, setErro]                         = useState("");
   const [carregando, setCarregando]             = useState(false);
+  const navigate = useNavigate();
 
   function removerFilme(titulo) {
     setCarrinho(carrinho.filter((filme) => filme.titulo !== titulo));
   }
 
   function calcularTotal() {
-  return carrinho
-    .reduce((total, filme) => {
-      const preco = parseFloat(String(filme.preco_diaria).replace(",", "."));
-      return total + (isNaN(preco) ? 0 : preco); // ← ignora preços nulos
-    }, 0)
-    .toFixed(2)
-    .replace(".", ",");
-}
+    return carrinho
+      .reduce((total, filme) => {
+        const preco = parseFloat(String(filme.preco_diaria).replace(",", "."));
+        return total + (isNaN(preco) ? 0 : preco);
+      }, 0)
+      .toFixed(2)
+      .replace(".", ",");
+  }
 
   async function finalizarPedido() {
-  setErro("");
+    setErro("");
 
-  if (!usuario) {
-    setErro("Você precisa estar logado para finalizar o pedido.");
-    return;
-  }
+    if (!usuario) {
+      const resultado = await Swal.fire({
+        title: "Acesso necessário",
+        text: "Você precisa estar logado ou criar uma conta!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Fazer Login",
+        cancelButtonText: "Criar Conta",
+        confirmButtonColor: "#e63946",
+        cancelButtonColor: "#555",
+      });
+
+      if (resultado.isConfirmed) {
+        navigate("/login");
+      } else if (resultado.dismiss === Swal.DismissReason.cancel) {
+        navigate("/cadastro");
+      }
+
+      return;
+    }
 
   // Bloqueia filmes do TMDB (sem preço e sem ID real no banco)
   const filmesForaDoBanco = carrinho.filter((f) =>
