@@ -1,170 +1,206 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CartaoFilme from "../components/CartaoFilme";
 
-const catalogo = [
-  // Drama
-  {
-    titulo: "O Poderoso Chefão",
-    genero: "Drama",
-    ano: 1972,
-    preco: "9,90",
-    capa: "https://www.themoviedb.org/t/p/w1280/oJagOzBu9Rdd9BrciseCm3U3MCU.jpg",
-  },
-  {
-    titulo: "Coringa",
-    genero: "Drama",
-    ano: 2019,
-    preco: "10,90",
-    capa: "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
-  },
-  {
-    titulo: "Forrest Gump",
-    genero: "Drama",
-    ano: 1994,
-    preco: "9,90",
-    capa: "https://image.tmdb.org/t/p/w500/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg",
-  },
-
-  // Ficção Científica
-  {
-    titulo: "Interestelar",
-    genero: "Ficção Científica",
-    ano: 2014,
-    preco: "12,90",
-    capa: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
-  },
-  {
-    titulo: "Matrix",
-    genero: "Ficção Científica",
-    ano: 1999,
-    preco: "11,90",
-    capa: "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
-  },
-
-  // Suspense
-  {
-    titulo: "Parasita",
-    genero: "Suspense",
-    ano: 2019,
-    preco: "11,90",
-    capa: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
-  },
-  {
-    titulo: "Corra!",
-    genero: "Suspense",
-    ano: 2017,
-    preco: "10,90",
-    capa: "https://image.tmdb.org/t/p/w500/tFXcEccSQMf3lfhfXKSU9iRBpa3.jpg",
-  },
-  {
-    titulo: "O Silêncio dos Inocentes",
-    genero: "Suspense",
-    ano: 1991,
-    preco: "10,90",
-    capa: "https://image.tmdb.org/t/p/w500/uS9m8OBk1A8eM9I042bx8XXpqAq.jpg",
-  },
-
-  // Animação
-  {
-    titulo: "Toy Story",
-    genero: "Animação",
-    ano: 1995,
-    preco: "7,90",
-    capa: "https://www.themoviedb.org/t/p/w1280/6AafgfifXkFS4g2xGJZIwsPQK6P.jpg",
-  },
-  {
-    titulo: "Espirited Away",
-    genero: "Animação",
-    ano: 2001,
-    preco: "8,90",
-    capa: "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
-  },
-
-  // Fantasia
-  {
-    titulo: "O Senhor dos Anéis",
-    genero: "Fantasia",
-    ano: 2001,
-    preco: "13,90",
-    capa: "https://image.tmdb.org/t/p/w500/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg",
-  },
-  {
-    titulo: "Harry Potter e a Pedra Filosofal",
-    genero: "Fantasia",
-    ano: 2001,
-    preco: "11,90",
-    capa: "https://image.tmdb.org/t/p/w500/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg",
-  },
-
-  // Ação
-  {
-    titulo: "Mad Max: Estrada da Fúria",
-    genero: "Ação",
-    ano: 2015,
-    preco: "10,90",
-    capa: "https://image.tmdb.org/t/p/w500/8tZYtuWezp8JbcsvHYO0O46tFbo.jpg",
-  },
-  {
-    titulo: "John Wick",
-    genero: "Ação",
-    ano: 2014,
-    preco: "9,90",
-    capa: "https://image.tmdb.org/t/p/w500/fZPSd91yGE9fCcCe6OoQr6E3Bev.jpg",
-  },
-  {
-    titulo: "Oppenheimer",
-    genero: "Ação",
-    ano: 2023,
-    preco: "14,90",
-    capa: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
-  },
-];
+const API_KEY = "94bb8ba437d9fafc1516cc92e73b1ca4"; // mesma chave do tmdbServices.js
 
 export default function FilmesPage({ carrinho, setCarrinho }) {
+  const [filmes, setFilmes]             = useState([]);
+  const [generos, setGeneros]           = useState([]);
+  const [filtro, setFiltro]             = useState("Todos");
+  const [carregando, setCarregando]     = useState(true);
+  const [erro, setErro]                 = useState("");
 
-  const [filtro, setFiltro] = useState("Todos");
+  // Estados da busca TMDB
+  const [busca, setBusca]               = useState("");
+  const [resultadosTMDB, setResultados] = useState([]);
+  const [buscando, setBuscando]         = useState(false);
+  const [modoTMDB, setModoTMDB]         = useState(false);
 
-  const filmesFiltrados = (filtro === "Todos"
-    ? catalogo
-    : catalogo.filter(filme => filme.genero === filtro)
+  // Carrega filmes do banco normalmente
+  useEffect(() => {
+    async function carregarDados() {
+      try {
+        const [resFilmes, resGeneros] = await Promise.all([
+          fetch("http://localhost:3001/filmes"),
+          fetch("http://localhost:3001/generos"),
+        ]);
+
+        const dadosFilmes  = await resFilmes.json();
+        const dadosGeneros = await resGeneros.json();
+
+        setFilmes(dadosFilmes.filmes   || []);
+        setGeneros(dadosGeneros.generos || []);
+      } catch (err) {
+        console.error(err);
+        setErro("Erro ao carregar catálogo. Verifique se o servidor está rodando.");
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarDados();
+  }, []);
+
+  // Busca no TMDB ao submeter o formulário
+  async function handleBusca(e) {
+  e.preventDefault();
+  if (!busca.trim()) {
+    setModoTMDB(false);
+    setResultados([]);
+    return;
+  }
+
+  setBuscando(true);
+  setModoTMDB(true);
+
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=pt-BR&query=${encodeURIComponent(busca)}`
+    );
+    const data = await res.json();
+
+    const filmesMapeados = (data.results || []).map((f) => {
+      // Procura se o título existe no banco (ignora maiúsculas/minúsculas)
+      const filmeNoBanco = filmes.find(
+        (fb) => fb.titulo.toLowerCase() === f.title.toLowerCase()
+      );
+
+      // Se encontrou no banco, usa os dados reais
+      if (filmeNoBanco) {
+        return {
+          id_filme:       filmeNoBanco.id_filme,
+          titulo:         filmeNoBanco.titulo,
+          nome_genero:    filmeNoBanco.nome_genero,
+          ano_lancamento: filmeNoBanco.ano_lancamento,
+          preco_diaria:   filmeNoBanco.preco_diaria,
+          poster:         filmeNoBanco.poster || `https://image.tmdb.org/t/p/w500${f.poster_path}`,
+        };
+      }
+
+      // Se não encontrou, retorna como indisponível (comportamento atual)
+      return {
+        id_filme:       `tmdb-${f.id}`,
+        titulo:         f.title,
+        nome_genero:    "—",
+        ano_lancamento: f.release_date?.split("-")[0] || "—",
+        preco_diaria:   null,
+        poster:         f.poster_path
+                          ? `https://image.tmdb.org/t/p/w500${f.poster_path}`
+                          : null,
+      };
+    });
+
+    setResultados(filmesMapeados);
+  } catch {
+    setErro("Erro ao buscar no TMDB.");
+  } finally {
+    setBuscando(false);
+  }
+}
+
+  // Limpa a busca e volta ao catálogo
+  function limparBusca() {
+    setBusca("");
+    setModoTMDB(false);
+    setResultados([]);
+  }
+
+  const filmesFiltrados = (
+    filtro === "Todos"
+      ? filmes
+      : filmes.filter((f) => f.nome_genero === filtro)
   ).sort((a, b) => a.titulo.localeCompare(b.titulo, "pt-BR"));
+
+  if (carregando) return <h1>Carregando catálogo...</h1>;
 
   return (
     <div>
-
       <div className="filmes-header">
         <h1>🎥 Catálogo de Filmes</h1>
-        <div className="filtro-genero">
-          <label>Filtrar por gênero:</label>
-          <select value={filtro} onChange={(e) => setFiltro(e.target.value)}>
-            <option value="Todos">Todos</option>
-            <option value="Ação">Ação</option>
-            <option value="Drama">Drama</option>
-            <option value="Ficção Científica">Ficção Científica</option>
-            <option value="Suspense">Suspense</option>
-            <option value="Animação">Animação</option>
-            <option value="Fantasia">Fantasia</option>
-          </select>
-        </div>
-      </div>
 
-      <p className="contagem-filmes">{filmesFiltrados.length} filme(s) encontrado(s)</p>
-
-      <div className="grade-filmes">
-        {filmesFiltrados.map((filme) => (
-          <CartaoFilme
-            key=          {filme.titulo}
-            titulo=       {filme.titulo}
-            genero=       {filme.genero}
-            ano=          {filme.ano}
-            preco=        {filme.preco}
-            capa=         {filme.capa}
-            carrinho=     {carrinho}
-            setCarrinho=  {setCarrinho}
+        {/* Barra de pesquisa TMDB */}
+        <form onSubmit={handleBusca} className="barra-busca">
+          <input
+            type="text"
+            placeholder="🔍 Pesquisar filme..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
           />
-        ))}
+          <button type="submit">Buscar</button>
+          {modoTMDB && (
+            <button type="button" onClick={limparBusca}>
+              ✕ Voltar ao catálogo
+            </button>
+          )}
+        </form>
+
+        {/* Filtro de gênero — só aparece no modo catálogo */}
+        {!modoTMDB && (
+          <div className="filtro-genero">
+            <label>Filtrar por gênero:</label>
+            <select value={filtro} onChange={(e) => setFiltro(e.target.value)}>
+              <option value="Todos">Todos</option>
+              {generos.map((g) => (
+                <option key={g.id_genero} value={g.nome_genero}>
+                  {g.nome_genero}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
+      {erro && <p style={{ color: "red" }}>{erro}</p>}
+
+      {/* Modo TMDB */}
+      {modoTMDB ? (
+        <>
+          {buscando ? (
+            <h2>Buscando "{busca}"...</h2>
+          ) : (
+            <>
+              <p className="contagem-filmes">
+                {resultadosTMDB.length} resultado(s) encontrado(s) para "{busca}"
+              </p>
+              <div className="grade-filmes">
+                {resultadosTMDB.map((filme) => (
+                  <CartaoFilme
+                    key={filme.id_filme}
+                    id_filme={filme.id_filme}
+                    titulo={filme.titulo}
+                    genero={filme.nome_genero}
+                    ano={filme.ano_lancamento}
+                    preco={filme.preco_diaria}
+                    capa={filme.poster}
+                    carrinho={carrinho}
+                    setCarrinho={setCarrinho}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </>
+      ) : (
+        // Modo catálogo normal
+        <>
+          <p className="contagem-filmes">{filmesFiltrados.length} filme(s) encontrado(s)</p>
+          <div className="grade-filmes">
+            {filmesFiltrados.map((filme) => (
+              <CartaoFilme
+                key={filme.id_filme}
+                id_filme={filme.id_filme}
+                titulo={filme.titulo}
+                genero={filme.nome_genero}
+                ano={filme.ano_lancamento}
+                preco={filme.preco_diaria}
+                capa={filme.poster}
+                carrinho={carrinho}
+                setCarrinho={setCarrinho}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
