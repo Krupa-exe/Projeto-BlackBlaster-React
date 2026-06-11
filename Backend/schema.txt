@@ -1,0 +1,120 @@
+-- ============================================
+-- BLACKBLASTER — Schema MySQL
+-- ============================================
+
+CREATE DATABASE IF NOT EXISTS blackblaster
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE blackblaster;
+
+-- --------------------------------------------
+-- Tabela: genero
+-- --------------------------------------------
+CREATE TABLE genero (
+  id_genero   INT          NOT NULL AUTO_INCREMENT,
+  nome_genero VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id_genero)
+);
+
+-- --------------------------------------------
+-- Tabela: filme
+-- --------------------------------------------
+CREATE TABLE filme (
+  id_filme       INT           NOT NULL AUTO_INCREMENT,
+  titulo         VARCHAR(100)  NOT NULL,
+  ano_lancamento INT           NOT NULL,
+  preco_diaria   DECIMAL(6,2)  NOT NULL,
+  fk_genero      INT           NOT NULL,
+  poster         VARCHAR(255)  NULL,
+  PRIMARY KEY (id_filme),
+  CONSTRAINT fk_filme_genero FOREIGN KEY (fk_genero) REFERENCES genero (id_genero)
+);
+
+-- --------------------------------------------
+-- Tabela: usuario
+-- --------------------------------------------
+CREATE TABLE usuario (
+  id_usuario      INT          NOT NULL AUTO_INCREMENT,
+  nome            VARCHAR(100) NOT NULL,
+  email           VARCHAR(150) NOT NULL UNIQUE,
+  cpf             CHAR(14)     NOT NULL UNIQUE,
+  telefone        VARCHAR(20)  NULL,
+  data_nascimento DATE         NULL,
+  login           VARCHAR(100) NOT NULL UNIQUE,
+  senha           VARCHAR(255) NOT NULL,
+  plano           VARCHAR(50)  NOT NULL,
+  tipo            VARCHAR(20)  NOT NULL DEFAULT 'cliente',
+  data_cadastro   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  avatar          VARCHAR(255) NULL,
+  PRIMARY KEY (id_usuario)
+);
+
+-- --------------------------------------------
+-- Tabela: locacao
+-- --------------------------------------------
+CREATE TABLE locacao (
+  id_locacao     INT         NOT NULL AUTO_INCREMENT,
+  data_inicio    DATE        NOT NULL DEFAULT (CURRENT_DATE),
+  data_devolucao DATE        NOT NULL,
+  status         VARCHAR(50) NOT NULL DEFAULT 'ativo',
+  fk_usuario     INT         NOT NULL,
+  fk_filme       INT         NOT NULL,
+  PRIMARY KEY (id_locacao),
+  CONSTRAINT fk_locacao_usuario FOREIGN KEY (fk_usuario) REFERENCES usuario (id_usuario),
+  CONSTRAINT fk_locacao_filme   FOREIGN KEY (fk_filme)   REFERENCES filme   (id_filme)
+);
+
+-- ============================================
+-- Dados iniciais: generos
+-- ============================================
+
+INSERT INTO genero (nome_genero) VALUES
+  ('Acao'),
+  ('Drama'),
+  ('Ficcao Cientifica'),
+  ('Suspense'),
+  ('Animacao'),
+  ('Fantasia');
+
+-- ============================================
+-- Dados iniciais: filmes
+-- id_genero: 1=Acao, 2=Drama, 3=Ficcao Cientifica, 4=Suspense, 5=Animacao, 6=Fantasia
+-- ============================================
+
+INSERT INTO filme (titulo, ano_lancamento, preco_diaria, fk_genero, poster) VALUES
+  ('O Poderoso Chefao',             1972, 9.90,  2, 'https://www.themoviedb.org/t/p/w1280/oJagOzBu9Rdd9BrciseCm3U3MCU.jpg'),
+  ('Coringa',                       2019, 10.90, 2, 'https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg'),
+  ('Forrest Gump',                  1994, 9.90,  2, 'https://image.tmdb.org/t/p/w500/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg'),
+  ('Interestelar',                  2014, 12.90, 3, 'https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg'),
+  ('Matrix',                        1999, 11.90, 3, 'https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg'),
+  ('Parasita',                      2019, 11.90, 4, 'https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg'),
+  ('Corra!',                        2017, 10.90, 4, 'https://image.tmdb.org/t/p/w500/tFXcEccSQMf3lfhfXKSU9iRBpa3.jpg'),
+  ('O Silencio dos Inocentes',      1991, 10.90, 4, 'https://image.tmdb.org/t/p/w500/uS9m8OBk1A8eM9I042bx8XXpqAq.jpg'),
+  ('Toy Story',                     1995, 7.90,  5, 'https://www.themoviedb.org/t/p/w1280/6AafgfifXkFS4g2xGJZIwsPQK6P.jpg'),
+  ('A Viagem de Chihiro',           2001, 8.90,  5, 'https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg'),
+  ('O Senhor dos Aneis',            2001, 13.90, 6, 'https://image.tmdb.org/t/p/w500/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg'),
+  ('Harry Potter e a Pedra Filosofal', 2001, 11.90, 6, 'https://image.tmdb.org/t/p/w500/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg'),
+  ('Mad Max: Estrada da Furia',     2015, 10.90, 1, 'https://image.tmdb.org/t/p/w500/8tZYtuWezp8JbcsvHYO0O46tFbo.jpg'),
+  ('John Wick',                     2014, 9.90,  1, 'https://image.tmdb.org/t/p/w500/fZPSd91yGE9fCcCe6OoQr6E3Bev.jpg'),
+  ('Oppenheimer',                   2023, 14.90, 1, 'https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg');
+
+-- ============================================
+-- Usuario admin padrao
+--
+-- ANTES DE RODAR ESTE ARQUIVO:
+-- 1. Abra o terminal na pasta Backend
+-- 2. Execute:
+--      node -e "const b = require('bcryptjs'); console.log(b.hashSync('sua_senha_aqui', 10));"
+-- 3. Copie o resultado e cole no lugar de COLE_O_HASH_AQUI abaixo
+-- ============================================
+
+INSERT IGNORE INTO usuario (nome, email, cpf, login, senha, plano, tipo) VALUES (
+  'Administrador',
+  'admin@blackblaster.com',
+  '000.000.000-00',
+  'admin',
+  'COLE_O_HASH_AQUI',
+  'Premium',
+  'admin'
+);
