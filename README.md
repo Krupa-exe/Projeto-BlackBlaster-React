@@ -51,23 +51,91 @@ src/
 
 ## 🚀 Como Rodar o Projeto
 
-**Pré-requisitos:** Node.js instalado.
+### Pré-requisitos
+
+Instale uma vez só antes de começar:
+
+- [Node.js](https://nodejs.org) — baixe a versão LTS
+- [MySQL](https://dev.mysql.com/downloads/mysql) — ou via XAMPP se já tiver
+
+Confirme a instalação no terminal:
 
 ```bash
-# Clone o repositório
-git clone https://github.com/Krupa-exe/Projeto-BlackBlaster-React.git
+node -v
+npm -v
+```
 
-# Entre na pasta
-cd Projeto-BlackBlaster-React
+---
 
-# Instale as dependências
+### Passo 1 — Configurar o banco
+
+Abra o MySQL Workbench e conecte no seu servidor local.
+
+Antes de executar o schema, gere o hash da senha do admin:
+
+```bash
+cd Backend
+node -e "const b = require('bcryptjs'); console.log(b.hashSync('admin123', 10));"
+```
+
+Copie o resultado, abra o `schema.sql`, substitua `COLE_O_HASH_AQUI` pelo hash gerado e execute o arquivo no Workbench.
+
+---
+
+### Passo 2 — Configurar o .env
+
+Na pasta `Backend`, abra o arquivo `.env` e preencha:
+
+```env
+SECRET_KEY=qualquer-frase-longa-aqui
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=sua_senha_do_mysql
+DB_NAME=blackblaster
+```
+
+---
+
+### Passo 3 — Instalar dependências
+
+**Terminal 1 — Backend:**
+
+```bash
+cd Backend
 npm install
+```
 
-# Rode o projeto
+**Terminal 2 — Frontend:**
+
+```bash
+cd seu-projeto-react
+npm install
+```
+
+---
+
+### Passo 4 — Rodar
+
+Você precisa de **dois terminais abertos ao mesmo tempo.**
+
+**Terminal 1 — Backend:**
+
+```bash
+cd Backend
+node server.js
+```
+
+> Deve aparecer: `Servidor rodando na porta 3001`
+
+**Terminal 2 — Frontend:**
+
+```bash
+cd seu-projeto-react
 npm start
 ```
 
-Acesse em: [http://localhost:3000](http://localhost:3000)
+> Abre automaticamente em [http://localhost:3000](http://localhost:3000)
 
 ---
 
