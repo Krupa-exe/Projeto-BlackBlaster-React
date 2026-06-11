@@ -133,9 +133,24 @@ nav a {
 }
 
 nav a:hover,
-nav a.ativo {
+nav a.active {
   color: var(--vermelho);
   border-bottom-color: var(--vermelho);
+}
+
+.btn-logout {
+  background-color: transparent;
+  border: 1px solid var(--vermelho);
+  color: var(--vermelho);
+  font-size: 0.85rem;
+  padding: 0.3rem 0.9rem;
+}
+
+.btn-logout:hover {
+  background-color: var(--vermelho);
+  color: #fff;
+  transform: none;
+  box-shadow: none;
 }
 
 .nav-carrinho-badge {
@@ -473,6 +488,18 @@ select:focus {
 .carrinho-total span { color: var(--vermelho); }
 
 /* ============================================
+   FORMULÁRIO DE LOGIN
+   ============================================ */
+.form-login {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.form-login h1 {
+  margin-bottom: 2rem;
+}
+
+/* ============================================
    FORMULÁRIO DE CADASTRO
    ============================================ */
 .form-cadastro {
@@ -498,9 +525,32 @@ select:focus {
   color: var(--cinza);
 }
 
+.usuario-card {
+  background-color: var(--preto-card);
+  border: 1px solid var(--preto-borda);
+  border-radius: var(--raio);
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  transition: border-color 0.2s;
+}
+ 
+.usuario-card:hover {
+  border-color: var(--vermelho);
+}
+
+.usuario-card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.usuario-card p {
+  color: var(--cinza);
+  font-size: 0.85rem;
+}
+
 .campo input[type="text"],
 .campo input[type="email"],
-.campo input[type="number"],
+.campo input[type="password"],
 .campo select {
   background-color: var(--preto-card);
   color: var(--branco);
@@ -511,6 +561,19 @@ select:focus {
   font-size: 0.95rem;
   width: 100%;
   transition: border-color 0.2s;
+}
+
+.campo input[type="date"] {
+  background-color: var(--preto-card);
+  color: var(--branco);
+  border: 1px solid var(--preto-borda);
+  border-radius: var(--raio);
+  padding: 0.65rem 0.9rem;
+  font-family: var(--fonte-corpo);
+  font-size: 0.95rem;
+  width: 100%;
+  transition: border-color 0.2s;
+  color-scheme: dark;  /* faz o calendário nativo aparecer no tema escuro */
 }
 
 .campo input:focus,
@@ -642,6 +705,13 @@ select:focus {
   color: var(--cinza);
 }
 
+.botoes-sucesso {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
 .mensagem-sucesso h2    { color: var(--branco); margin-bottom: 0.75rem; }
 .mensagem-sucesso p,
 .mensagem-vazia p       { margin-bottom: 1.5rem; font-size: 1rem; }
@@ -667,4 +737,217 @@ select:focus {
 
   .grade-filmes          { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
   .cartao-filme img      { height: 200px; }
+}
+/* ============================================
+   AVATAR MENU
+   ============================================ */
+
+.avatar-wrapper {
+  position: relative;
+}
+
+/* Bolinha clicável na navbar */
+.avatar-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  padding: 0;
+  background-color: var(--vermelho);
+  border: 2px solid transparent;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+
+.avatar-btn:hover {
+  border-color: var(--branco);
+  transform: none;
+  box-shadow: none;
+  background-color: var(--vermelho);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.avatar-iniciais {
+  font-family: var(--fonte-titulo);
+  font-size: 0.95rem;
+  color: #fff;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+/* Menu dropdown */
+.avatar-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  background-color: var(--preto-card);
+  border: 1px solid var(--preto-borda);
+  border-radius: var(--raio);
+  padding: 1rem;
+  width: 220px;
+  z-index: 200;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.avatar-nome {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--branco);
+  margin-bottom: 0.15rem;
+}
+
+.avatar-login {
+  font-size: 0.8rem;
+  color: var(--cinza);
+}
+
+/* Area de drag and drop */
+.avatar-drop-area {
+  border: 2px dashed var(--preto-borda);
+  border-radius: var(--raio);
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+  color: var(--cinza);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.avatar-drop-area:hover {
+  border-color: var(--vermelho);
+  background-color: rgba(229, 9, 20, 0.05);
+}
+
+.avatar-drop-area.arrastando {
+  border-color: var(--vermelho);
+  background-color: rgba(229, 9, 20, 0.1);
+}
+
+.avatar-drop-hint {
+  display: block;
+  font-size: 0.72rem;
+  color: #555;
+  margin-top: 0.3rem;
+}
+
+.avatar-erro {
+  color: var(--vermelho);
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+/* ============================================
+   BARRA DE BUSCA TMDB
+   ============================================ */
+.barra-busca {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  max-width: 650px;
+}
+
+.barra-busca input {
+  flex: 1;
+  background-color: var(--preto-card);
+  color: var(--branco);
+  border: 1px solid var(--preto-borda);
+  border-radius: var(--raio);
+  padding: 0.6rem 1rem;
+  font-family: var(--fonte-corpo);
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.barra-busca input:focus {
+  outline: none;
+  border-color: var(--vermelho);
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.15);
+}
+
+.barra-busca input::placeholder {
+  color: #555;
+}
+
+.barra-busca button[type="submit"] {
+  background-color: var(--vermelho);
+  color: #fff;
+  border: none;
+  border-radius: var(--raio);
+  padding: 0.6rem 1.2rem;
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+
+.barra-busca button[type="submit"]:hover {
+  background-color: var(--vermelho-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--sombra);
+}
+
+/* Botão "Voltar ao catálogo" */
+.barra-busca button[type="button"] {
+  background-color: transparent;
+  color: var(--cinza);
+  border: 1px solid #444;
+  border-radius: var(--raio);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.barra-busca button[type="button"]:hover {
+  color: var(--vermelho);
+  border-color: var(--vermelho);
+  background-color: transparent;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Badge "resultado TMDB" nos cartões vindos da API */
+.cartao-filme.tmdb::after {
+  content: "TMDB";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: rgba(229, 9, 20, 0.85);
+  color: #fff;
+  font-family: var(--fonte-titulo);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+
+@media (max-width: 600px) {
+  .barra-busca {
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .barra-busca input {
+    width: 100%;
+  }
 }
